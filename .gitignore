@@ -102,3 +102,8 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+database.ini
+robots/
+.idea/
+ieee_robots.html
