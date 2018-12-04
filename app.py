@@ -2,7 +2,14 @@ from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 
+from survey import Survey
 from util import parse_robots_db
+
+
+def recreate_schema(_db):
+    import base
+    base.Base.metadata.drop_all(_db.engine)
+    base.Base.metadata.create_all(_db.engine)
 
 
 def create_app():
@@ -10,9 +17,7 @@ def create_app():
     Bootstrap(_app)
     _app.config.from_object('config.Config')
     _db = SQLAlchemy(_app)
-    # import base
-    # base.Base.metadata.drop_all(_db.engine)
-    # base.Base.metadata.create_all(_db.engine)
+    # recreate_schema(_db)
     return _app, _db
 
 
@@ -24,15 +29,10 @@ def parse_robots():
     return parse_robots_db(db)
 
 
-@app.route('/')
-def hello_world():
-    return render_template('index.html')
+@app.route('/survey')
+def survey():
+    return render_template('survey.html', survey=Survey(db))
 
 
 if __name__ == '__main__':
     app.run()
-
-# assignmentId, hitId, turkSubmitTo, and workerId
-# preview -  assignmentId: ASSIGNMENT_ID_NOT_AVAILABLE
-# POST results back to https://www.mturk.com/mturk/externalSubmit
-# (https://workersandbox.mturk.com/mturk/externalSubmit) (also record locally??)
