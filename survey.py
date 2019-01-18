@@ -5,7 +5,7 @@ from flask import request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 
-from schema import Robot, Assignment, RobotAssignment
+from schema import Robot, Assignment
 
 robot_lock = Lock()
 
@@ -18,6 +18,12 @@ class AMTParams(object):
         self.worker_id = request.args.get('workerId', None)  # type: str
         self.preview = self.assignment_id == 'ASSIGNMENT_ID_NOT_AVAILABLE'
 
+    def __repr__(self):
+        if self.preview:
+            return "AMT PREVIEW"
+        return "AMTRequest({}, {}, {}, {})".format(self.assignment_id, self.hit_id,
+                                                   self.turk_submit_to, self.worker_id)
+
 
 # assignmentId, hitId, turkSubmitTo, and workerId
 # preview -  assignmentId: ASSIGNMENT_ID_NOT_AVAILABLE
@@ -26,23 +32,40 @@ class AMTParams(object):
 
 class Survey(object):
     ROBOTS_PER_HIT = 30
+    PREVIEW_ROBOTS = ['Ava', 'Bandit', 'RoboBee']
 
     def __init__(self, db: SQLAlchemy):
         self.db = db
         self.amt_params = AMTParams()
         self.robots = []  # type: typing.List[Robot]
 
-        if not self.amt_params.preview:
-            self.lookup_assignment()
+        if self.amt_params.assignment_id is None or self.amt_params.preview:
+            self.robots = Survey.PREVIEW_ROBOTS
+        else:
+            self.robots = self.lookup_assignment()
+
+    def __repr__(self):
+        return "Survey: Robots ({}) Params ({})".format(self.robots, repr(self.amt_params))
 
     def get_robots(self):
-        """fill with random robots based on least annotated robot"""
-        c_col = func.count(RobotAssignment.robot_id).label('assignment_count')
-        counts = self.db.session.query(RobotAssignment.robot_id,
-                                       func.count(RobotAssignment.robot_id).label('assignment_count')) \
-            .group_by(RobotAssignment.robot_id) \
-            .order_by(c_col.asc()) \
-            .count()
+        # TODO(Vadim) do weighted probability that decreases when robot has more annotations
+
+        """fill with robots based on least annotated robots"""
+        c_col = func.count("robot_assignment_associations.robot_id").label('assignment_count')
+        query = self.db.session.query("robot_assignment_associations.robot_id", c_col) \
+            .group_by("robot_assignment_associations.robot_id") \
+            .order_by(c_col.asc())
+        # TODO(Vadim) improve via sql query?
+        # c_col = func.count(Assignment.id).label('assignment_count')
+        # query = self.db.session.query(Robot.name, c_col) \
+        #     .outerjoin(Assignment.robots) \
+        #     .group_by(Robot.name) \
+        #     .order_by(c_col.asc())
+        print(query)
+        counts = query.all()
+        print(counts)
+
+
         robots = []
         for robot_name, low_count in counts:
             robots.append(robot_name)
@@ -53,13 +76,17 @@ class Survey(object):
     def create_assignment(self):
         a = Assignment()
         a.id = self.amt_params.assignment_id
+        a.hit_id = self.amt_params.hit_id
+        a.worker_id = self.amt_params.worker_id
         with robot_lock:
             a.robots = self.get_robots()
             self.db.session.add(a)
+        return a
 
     def lookup_assignment(self):
         assignment = self.db.session.query(Assignment) \
             .filter(Assignment.id == self.amt_params.assignment_id) \
             .first()
         if assignment is None:
-            self.create_assignment()
+            assignment = self.create_assignment()
+        return assignment.robots
