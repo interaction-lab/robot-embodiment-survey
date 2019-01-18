@@ -17,8 +17,8 @@ class RobotAssignmentAssociation(Base):
     robot_id = Column(String, ForeignKey('robot.name'), primary_key=True)
     assignment_id = Column(String, ForeignKey('assignment.id'), primary_key=True)
 
-    robot = relationship("Robot", back_populates="assignments")
-    assignment = child = relationship("Assignment", back_populates="robots")
+    robot = relationship("Robot", back_populates="associations")
+    assignment = child = relationship("Assignment", back_populates="associations")
 
 
 class Assignment(Base):
@@ -27,7 +27,12 @@ class Assignment(Base):
     id = Column(String, primary_key=True, nullable=False)
     hit_id = Column(String, nullable=False)
     worker_id = Column(String, nullable=False)
-    robots = relationship("RobotAssignmentAssociation")
+    associations = relationship("RobotAssignmentAssociation")
+
+    # TODO(Vadim) fix
+    robots = relationship("Robot", secondary="RobotAssignmentAssociation",
+                          primaryjoin="Assignment.id==RobotAssignmentAssociation.robot_id",
+                          secondaryjoin="Robot.name==RobotAssignmentAssociation.robot_id", )
 
 
 class Robot(Base):
@@ -37,5 +42,6 @@ class Robot(Base):
     short_name = Column(String, nullable=False)
     remote_url = Column(String, nullable=False)
     local_path = Column(String, nullable=False)
+    associations = relationship("RobotAssignmentAssociation")
 
-    assignments = relationship("RobotAssignmentAssociation")
+    # assignments = relationship("Assignment", secondary="RobotAssignmentAssociation", back_populates="robots")
