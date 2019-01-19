@@ -30,9 +30,9 @@ class Assignment(Base):
     associations = relationship("RobotAssignmentAssociation")
 
     # TODO(Vadim) fix
-    robots = relationship("Robot", secondary="RobotAssignmentAssociation",
-                          primaryjoin="Assignment.id==RobotAssignmentAssociation.robot_id",
-                          secondaryjoin="Robot.name==RobotAssignmentAssociation.robot_id", )
+    # robots = relationship("Robot", secondary="RobotAssignmentAssociation",
+    #                       primaryjoin="Assignment.id==RobotAssignmentAssociation.robot_id",
+    #                       secondaryjoin="Robot.name==RobotAssignmentAssociation.robot_id", )
 
 
 class Robot(Base):
@@ -45,3 +45,6 @@ class Robot(Base):
     associations = relationship("RobotAssignmentAssociation")
 
     # assignments = relationship("Assignment", secondary="RobotAssignmentAssociation", back_populates="robots")
+
+    def __repr__(self):
+        return "{} <{}, {}, {}>".format(self.name, self.short_name, self.remote_url, self.local_path)

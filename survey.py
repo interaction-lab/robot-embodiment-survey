@@ -40,7 +40,7 @@ class Survey(object):
         self.robots = []  # type: typing.List[Robot]
 
         if self.amt_params.assignment_id is None or self.amt_params.preview:
-            self.robots = Survey.PREVIEW_ROBOTS
+            self.robots = map(self.get_robot_by_name, Survey.PREVIEW_ROBOTS)
         else:
             self.robots = self.lookup_assignment()
 
@@ -65,13 +65,15 @@ class Survey(object):
         counts = query.all()
         print(counts)
 
-
         robots = []
         for robot_name, low_count in counts:
             robots.append(robot_name)
             if len(robots) >= Survey.ROBOTS_PER_HIT:
                 break
         return robots
+
+    def get_robot_by_name(self, name):
+        return self.db.session.query(Robot).filter(Robot.name == name).one()
 
     def create_assignment(self):
         a = Assignment()

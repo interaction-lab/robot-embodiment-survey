@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 
@@ -13,7 +13,7 @@ def recreate_schema(_db):
 
 
 def create_app():
-    _app = Flask(__name__)
+    _app = Flask(__name__, static_url_path='')
     Bootstrap(_app)
     _app.config.from_object('config.Config')
     _db = SQLAlchemy(_app)
@@ -22,6 +22,16 @@ def create_app():
 
 
 app, db = create_app()
+
+
+@app.route('/robots/<path:path>')
+def send_robots(path):
+    return send_from_directory('robots', path)
+
+
+@app.route('/static/<path:path>')
+def send_static(path):
+    return send_from_directory('static', path)
 
 
 @app.route('/parse_robots')
