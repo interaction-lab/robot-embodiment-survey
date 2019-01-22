@@ -42,7 +42,7 @@
                     <div class="row">
                         <div class="col">
 {#                            TODO(Vadim) Do i need slider id per robot#}
-                            <input class="abstractionSlider" data-slider-id='ex1Slider' type="text"
+                            <input class="abstractionSlider" type="text"
                                    data-slider-min="0" data-slider-max="5"
                                    data-slider-step="1" data-slider-value="0"/>
                         </div>
@@ -55,11 +55,14 @@
 
 {% block styles %}
     {{ super() }}
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='mystyle.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('bower.static',
+                                    filename='seiyria-bootstrap-slider/dist/css/bootstrap-slider.css') }}">
 {% endblock %}
 
 {% block scripts %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="{{ url_for('bower.static', filename='seiyria-bootstrap-slider/dist/bootstrap-slider.js') }}"></script>
     <script src="{{ url_for('static', filename='index.js') }}"></script>
     {{ super() }}
 {% endblock %}

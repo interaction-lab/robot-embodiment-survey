@@ -1,5 +1,6 @@
 from flask import Flask, render_template, send_from_directory
 from flask_bootstrap import Bootstrap
+from flask_bower import Bower
 from flask_sqlalchemy import SQLAlchemy
 
 from survey import Survey
@@ -15,6 +16,7 @@ def recreate_schema(_db):
 def create_app():
     _app = Flask(__name__, static_url_path='')
     Bootstrap(_app)
+    Bower(_app)
     _app.config.from_object('config.Config')
     _db = SQLAlchemy(_app)
     # recreate_schema(_db)

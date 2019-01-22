@@ -3,4 +3,5 @@ sqlalchemy
 flask
 flask-sqlalchemy
 flask-bootstrap
+flask-bower
 urllib3

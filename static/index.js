@@ -3,3 +3,9 @@ $('.abstractionSlider').slider({
 		return 'Current value: ' + value;
 	}
 });
+
+console.log("index");
+
+$().ready(() => {
+	console.log("ready");
+});
