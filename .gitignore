@@ -107,3 +107,6 @@ database.ini
 robots/
 .idea/
 ieee_robots.html
+
+*.tar.gz
+bower_components/
