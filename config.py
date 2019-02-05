@@ -21,6 +21,8 @@ def db_config(filename='database.ini', section='postgresql'):
 
 
 class Config(object):
+    SANDBOX_MTURK = "https://workersandbox.mturk.com/mturk/externalSubmit"
+    MTURK = "https://www.mturk.com/mturk/externalSubmit"
     DEBUG = True
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'postgresql://{user}:{password}@{host}:{port}/{database}'.format(**db_config())

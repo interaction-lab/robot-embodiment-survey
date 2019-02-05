@@ -10,59 +10,76 @@
 {% block content %}
     <div class="container">
         {%  for robot in survey.robots %}
-            <div class="row well">
-                <div class="col">
-                    <h1>{{ robot.name }}</h1>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <img src="{{ robot.local_path }}" width="300px"  alt="{{ robot.name }}"/>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="row">
-                        <div class="col">
-                            <h3>Design Metaphor</h3>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <textarea></textarea>
-                        </div>
+            <div class="well">
+                <div class="row">
+                    <div class="col">
+                        <h1>{{ robot.name }}</h1>
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <div class="row">
-                        <div class="col">
-                            <h3>Level of Abstraction</h3>
-                        </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <img src="{{ robot.local_path }}" width="100%" alt="{{ robot.name }}"/>
                     </div>
-                    <div class="row">
-                        <div class="col">
-{#                            TODO(Vadim) Do i need slider id per robot#}
-                            <input class="abstractionSlider" type="text"
-                                   data-slider-min="0" data-slider-max="5"
-                                   data-slider-step="1" data-slider-value="0"/>
+                    <div class="col-sm-8">
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col">
+                                    <h3>Design Metaphor</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    {#<textarea></textarea>#}
+                                    <input data-type="design-metaphor"
+                                           data-robot-name="{{ robot.name }}" type="text" width="100%"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col">
+                                    <h3>Level of Abstraction</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    {#                            TODO(Vadim) Do i need slider id per robot#}
+                                    <input class="abstractionSlider" type="text"
+                                           data-type="abstraction-slider"
+                                           data-robot-name="{{ robot.name }}"
+                                           data-slider-min="0" data-slider-max="5"
+                                           data-slider-step="1" data-slider-value="0"/>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         {% endfor %}
+        <div class="well">
+            <div class="row">
+                <div class="col-sm-2" style="float: none; margin: 0 auto;">
+                    <button type="button" class="btn btn-primary" id="submit">Submit</button>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
 
 {% block styles %}
     {{ super() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('bower.static',
-                                    filename='seiyria-bootstrap-slider/dist/css/bootstrap-slider.css') }}">
+    <link rel="stylesheet" href="{{ url_for('bower',
+                                    path='seiyria-bootstrap-slider/dist/css/bootstrap-slider.css') }}">
 {% endblock %}
 
 {% block scripts %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="{{ url_for('bower.static', filename='seiyria-bootstrap-slider/dist/bootstrap-slider.js') }}"></script>
+    <script src="{{ url_for('bower', path='seiyria-bootstrap-slider/dist/bootstrap-slider.js') }}"></script>
+    <script>
+        const ASSIGNMENT_ID = "{{ survey.amt_params.assignment_id }}";
+        const SUBMISSION_URL = "{{ submission_url }}";
+    </script>
     <script src="{{ url_for('static', filename='index.js') }}"></script>
     {{ super() }}
 {% endblock %}

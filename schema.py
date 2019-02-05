@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -18,7 +20,7 @@ class RobotAssignmentAssociation(Base):
     assignment_id = Column(String, ForeignKey('assignment.id'), primary_key=True)
 
     robot = relationship("Robot", back_populates="associations")
-    assignment = child = relationship("Assignment", back_populates="associations")
+    assignment = relationship("Assignment", back_populates="associations")
 
 
 class Assignment(Base):
@@ -27,7 +29,7 @@ class Assignment(Base):
     id = Column(String, primary_key=True, nullable=False)
     hit_id = Column(String, nullable=False)
     worker_id = Column(String, nullable=False)
-    associations = relationship("RobotAssignmentAssociation")
+    associations = relationship("RobotAssignmentAssociation")  # type: List[RobotAssignmentAssociation]
 
     # TODO(Vadim) fix
     # robots = relationship("Robot", secondary="RobotAssignmentAssociation",
