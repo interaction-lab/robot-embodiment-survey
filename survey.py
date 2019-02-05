@@ -89,7 +89,6 @@ class Survey(object):
                         c = random.choice(r_list)
                     robot_names.add(c)
 
-        print(robot_names)
         return robot_names
 
     def get_robot_by_name(self, name):
@@ -107,7 +106,6 @@ class Survey(object):
         with robot_lock:
             robots = self.get_random_robots()
             for r in robots:
-                print("Adding robot to assignment", r, a)
                 association = RobotAssignmentAssociation()
                 association.robot = r
                 association.assignment = a
@@ -127,6 +125,7 @@ class Survey(object):
         return assignment
 
     def validate_params(self):
+        # TODO(Vadim) optimize with loop over amt_param
         if self.amt_params.assignment_id is None or self.amt_params.hit_id is None or self.amt_params.worker_id is None:
             raise ParameterException()
         return True

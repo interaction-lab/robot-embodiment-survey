@@ -78,7 +78,8 @@
     <script src="{{ url_for('bower', path='seiyria-bootstrap-slider/dist/bootstrap-slider.js') }}"></script>
     <script>
         const ASSIGNMENT_ID = "{{ survey.amt_params.assignment_id }}";
-        const SUBMISSION_URL = "{{ submission_url }}";
+        const MTURK_SUBMISSION_URL = "{{ submission_url }}";
+        const SERVER_SUBMISSION = "{{ url_for('submit') }}";
     </script>
     <script src="{{ url_for('static', filename='index.js') }}"></script>
     {{ super() }}

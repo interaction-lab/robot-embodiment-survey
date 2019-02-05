@@ -1,8 +1,9 @@
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, request
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 
 import config
+from schema import Submission
 from survey import Survey
 from util import parse_robots_db
 
@@ -50,6 +51,22 @@ def parse_robots():
 def survey():
     # TODO(Vadim) use turkSubmitTo instead of submission_url
     return render_template('survey.html', survey=Survey(db), submission_url=c.SANDBOX_MTURK if c.DEBUG else c.MTURK)
+
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    r_json = request.get_json()
+    for r in r_json['robots']:
+        s = Submission()
+        s.assignment_id = r_json['assignmentId']
+        s.robot_id = r
+        s.abstraction_slider = r_json['robots'][r]['abstraction-slider']
+        s.design_metaphor = r_json['robots'][r]['design-metaphor']
+        print(s)
+        db.session.add(s)
+    db.session.commit()
+    db.session.flush()
+    return '', 204
 
 
 if __name__ == '__main__':
