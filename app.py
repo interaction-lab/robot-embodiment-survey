@@ -62,7 +62,6 @@ def submit():
         s.robot_id = r
         s.abstraction_slider = r_json['robots'][r]['abstraction-slider']
         s.design_metaphor = r_json['robots'][r]['design-metaphor']
-        print(s)
         db.session.add(s)
     db.session.commit()
     db.session.flush()

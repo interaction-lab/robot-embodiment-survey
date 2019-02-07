@@ -8,15 +8,22 @@ RUN apt update && apt install -y \
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
 	apt update && \
 	apt install -y \
-		nodejs git tar vim nginx postgresql postgresql-contrib python3 python3-pip \
-		python3-psycopg2 \
+		nodejs \
+		git \
+		tar \
+		zip \
+		unzip \
+		vim \
+		nginx \
+		python3 python3-pip python3-psycopg2 \
+		postgresql postgresql-contrib \
 		sudo \
 		&& \
 	npm install -g bower
 
 WORKDIR /deployment
-COPY repo.tar.gz ./
-RUN tar xzf repo.tar.gz
+COPY repo.zip ./
+RUN unzip repo.zip || ls
 COPY database.ini ./
 
 RUN pip3 install -r requirements.txt
