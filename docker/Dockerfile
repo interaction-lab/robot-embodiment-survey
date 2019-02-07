@@ -8,7 +8,9 @@ RUN apt update && apt install -y \
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
 	apt update && \
 	apt install -y \
-		nodejs git tar nginx postgresql postgresql-contrib python3 python3-pip \
+		nodejs git tar vim nginx postgresql postgresql-contrib python3 python3-pip \
+		python3-psycopg2 \
+		sudo \
 		&& \
 	npm install -g bower
 
@@ -19,3 +21,10 @@ COPY database.ini ./
 
 RUN pip3 install -r requirements.txt
 RUN bower --allow-root update
+
+COPY pg_hba.conf /etc/postgresql/10/main/
+RUN chmod 640 /etc/postgresql/10/main/pg_hba.conf && \
+	chown postgres:postgres /etc/postgresql/10/main/pg_hba.conf && \
+	service postgresql restart
+# RUN sudo -u postgres createdb postgres && \
+#	sudo -u postgres psql postgres ALTER USER user_name WITH PASSWORD 'postgres' \q;

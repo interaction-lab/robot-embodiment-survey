@@ -25,7 +25,8 @@ class Config(object):
     MTURK = "https://www.mturk.com/mturk/externalSubmit"
     DEBUG = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://{user}:{password}@{host}:{port}/{database}'.format(**db_config())
+    db_conf = db_config()
+    SQLALCHEMY_DATABASE_URI = 'postgresql://{user}:{password}@{host}:{port}/{database}'.format(**db_conf) if 'password' in db_conf else 'postgresql://{user}@/{database}'.format(**db_conf)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_POOL_SIZE = 100
     SQLALCHEMY_MAX_OVERFLOW = 100
