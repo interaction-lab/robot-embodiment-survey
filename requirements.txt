@@ -5,4 +5,5 @@ flask-sqlalchemy
 flask-bootstrap
 flask-bower
 psycopg2
+psycopg2-binary
 urllib3

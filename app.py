@@ -49,7 +49,7 @@ def parse_robots():
 
 @app.route('/survey')
 def survey():
-    # TODO(Vadim) use turkSubmitTo instead of submission_url
+    # TODO(Vadim) use turkSubmitTo html param instead of submission_url
     return render_template('survey.html', survey=Survey(db), submission_url=c.SANDBOX_MTURK if c.DEBUG else c.MTURK)
 
 
@@ -69,4 +69,4 @@ def submit():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', debug=c.DEBUG)

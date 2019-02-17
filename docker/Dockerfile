@@ -22,21 +22,27 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
 	npm install -g bower
 
 WORKDIR /deployment
+COPY requirements.txt ./
+COPY bower.json ./
+RUN pip3 install -r requirements.txt
+RUN bower --allow-root update
+
+# TODO(Vadim) use only one database.ini
 COPY repo.zip ./
 RUN unzip repo.zip || ls
 COPY database.ini ./
 
-RUN pip3 install -r requirements.txt
-RUN bower --allow-root update
+EXPOSE 5000
 
-COPY pg_hba.conf /etc/postgresql/10/main/
-RUN chmod 640 /etc/postgresql/10/main/pg_hba.conf && \
-	chown postgres:postgres /etc/postgresql/10/main/pg_hba.conf && \
-	sudo service postgresql restart && sleep 5 && \
-	# sudo -u postgres createdb postgres && \
-	sudo -u postgres /usr/lib/postgresql/10/bin/pg_ctl -D /usr/local/var/postgres reload
+#COPY pg_hba.conf /etc/postgresql/10/main/
+#RUN chmod 640 /etc/postgresql/10/main/pg_hba.conf && \
+#	chown postgres:postgres /etc/postgresql/10/main/pg_hba.conf && \
+#	sudo service postgresql restart && sleep 5 && \
+#	# sudo -u postgres createdb postgres && \
+#	sudo -u postgres /usr/lib/postgresql/10/bin/pg_ctl -D /usr/local/var/postgres reload
+#
+#COPY db_init.sql ./
+#RUN su postgres && psql -f=db_init.sql
 
-COPY db_init.sql ./
-RUN su postgres && psql -f=db_init.sql
 # RUN sudo -u postgres createdb postgres && \
 #	sudo -u postgres psql postgres ALTER USER user_name WITH PASSWORD 'postgres' \q;

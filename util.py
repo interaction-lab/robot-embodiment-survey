@@ -11,8 +11,8 @@ def parse_robots_db(db):
     URL = 'https://robots.ieee.org/robots/'
     ROBOT_IMG_DIR = 'robots'
     robots = {}
-    with open('ieee_robots.html', 'r') as robots_file:
-        soup = BeautifulSoup(robots_file)
+    with open('ieee_robots.html', 'r', encoding="utf-8") as robots_file:
+        soup = BeautifulSoup(robots_file.read().encode('UTF-8'), features="html.parser")
         soup.prettify()
         for div in soup.findAll('div'):
             if div.get('id') == 'robotResults':
@@ -27,17 +27,21 @@ def parse_robots_db(db):
 
         if not os.path.exists(ROBOT_IMG_DIR):
             os.mkdir(ROBOT_IMG_DIR)
-            for robot, params in robots.items():
+
+        for robot, params in robots.items():
+            if not os.path.exists(params['local_path']):
                 print(params['remote_url'])
                 urllib.request.urlretrieve(params['remote_url'], params['local_path'])
 
         for robot, params in robots.items():
-            r = Robot()
-            r.name = robot
-            for k, v in params.items():
-                r.__setattr__(k, v)
-            print("adding robot " + repr(r))
-            db.session.add(r)
+            robot_exists = db.session.query(Robot).filter(Robot.name == robot).count() >= 1
+            if not robot_exists:
+                r = Robot()
+                r.name = robot
+                for k, v in params.items():
+                    r.__setattr__(k, v)
+                print("adding robot " + repr(r))
+                db.session.add(r)
         db.session.commit()
         db.session.flush()
 
