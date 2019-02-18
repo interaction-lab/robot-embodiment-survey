@@ -9,6 +9,21 @@
 
 {% block content %}
     <div class="container">
+        {#        TODO(Vadim): Add instructions well at top, different if preview (extended)#}
+        <div class="well">
+            <div class="row">
+                <div class="col-sm-4" style="float: none; margin: 0 auto;">
+                    <h1>Instructions</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4" style="float: none; margin: 0 auto;">
+                    <h4>For each robot, please indicate the design metaphor and indicate the abstraction level.</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
         {%  for robot in survey.robots %}
             <div class="well">
                 <div class="row">
@@ -44,11 +59,13 @@
                             <div class="row">
                                 <div class="col">
                                     {#                            TODO(Vadim) Do i need slider id per robot#}
+                                    Human
                                     <input class="abstractionSlider" type="text"
                                            data-type="abstraction-slider"
                                            data-robot-name="{{ robot.name }}"
                                            data-slider-min="0" data-slider-max="5"
                                            data-slider-step="1" data-slider-value="3"/>
+                                    Robot
                                 </div>
                             </div>
                         </div>

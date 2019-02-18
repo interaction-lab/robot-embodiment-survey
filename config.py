@@ -23,8 +23,10 @@ def db_config(filename='database.ini', section='postgresql'):
 class Config(object):
     SANDBOX_MTURK = "https://workersandbox.mturk.com/mturk/externalSubmit"
     MTURK = "https://www.mturk.com/mturk/externalSubmit"
+    HOST = "0.0.0.0"
     DEBUG = True
     TESTING = True
+    PROFILE = True
     db_conf = db_config()
     SQLALCHEMY_DATABASE_URI = 'postgresql://{user}:{password}@{host}:{port}/{database}'.format(**db_conf) if 'password' in db_conf else 'postgresql://{user}@/{database}'.format(**db_conf)
     SQLALCHEMY_TRACK_MODIFICATIONS = False

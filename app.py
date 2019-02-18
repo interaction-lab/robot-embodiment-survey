@@ -1,6 +1,7 @@
 from flask import Flask, render_template, send_from_directory, request
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.contrib.profiler import ProfilerMiddleware
 
 import config
 from schema import Submission
@@ -69,4 +70,6 @@ def submit():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=c.DEBUG)
+    if c.PROFILE:
+        app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[100], sort_by=('cumtime', 'time', 'calls'))
+    app.run(host=c.HOST, debug=c.DEBUG)
