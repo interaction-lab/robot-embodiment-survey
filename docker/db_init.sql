@@ -33,7 +33,7 @@ create table robot_assignment
 
 create table submission
 (
-  id                 bigint default nextval('submission_id_seq'::regclass) not null
+  id                 bigint default nextval('public.submission_id_seq') not null
     constraint submission_pkey
       primary key,
   assignment_id      varchar
