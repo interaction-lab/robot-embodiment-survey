@@ -111,3 +111,7 @@ ieee_robots.html
 *.tar.gz
 bower_components/
 *.zip
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
